@@ -1,7 +1,11 @@
 import express, { Application, Request, Response } from 'express';
+import cors from 'cors';
 
 const app: Application = express();
 const PORT: number = 3000;
+const FRONTEND_URL: string = "http://localhost:5173";
+
+app.use(cors({ origin: FRONTEND_URL }));
 
 try {
     app.listen(PORT, () => {
