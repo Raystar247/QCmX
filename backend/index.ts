@@ -10,9 +10,13 @@ app.use(cors({ origin: FRONTEND_URL }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const users = [
-    {id: "id1", username: "test1" }
-];
+type UserType = {
+    id: string;
+    username: string;
+};
+
+
+const users: UserType[] = [];
 
 try {
     app.listen(PORT, () => {
