@@ -10,6 +10,10 @@ app.use(cors({ origin: FRONTEND_URL }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const users = [
+    {id: "id1", username: "test1" }
+];
+
 try {
     app.listen(PORT, () => {
         console.log(`server running at: //localhost:${PORT}`);
@@ -22,7 +26,7 @@ try {
 
 app.get('/', (req: Request, res: Response) => {
     console.log("getリクエストを受け付けました");
-    return res.status(200).json({ message: 'Hello World' });
+    return res.status(200).json({ users });
 });
 
 app.post('/user/register', (req: Request, res: Response) => {
