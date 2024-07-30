@@ -1,29 +1,54 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { Button, Container, Stack, TextField } from '@mui/material';
+
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
 
 const BACKEND_URL: string = "http://localhost:3000";
 
 type UserType = {
   id: string;
   username: string;
-}
+  email: string;
+  password: string;
+};
 
 type UserRegisterFormType = {
   username: string;
-}
+  email: string;
+  password: string;
+};
+
+const validationSchema = yup.object({
+    email: yup.string()
+            .required('必須項目です')
+            .email('正しいメールアドレスを入力してください'),
+    username: yup.string().required('必須項目です'),
+    password: yup.string()
+                .required('必須項目です')
+                .min(6, '指定文字数より多い文字数で入力してください')
+                .matches(
+                  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&].*$/,
+                  'パスワードが弱いです'
+                )
+});
 
 const UserRegister: React.FC = () => {
 
-  const { register, handleSubmit } = useForm<UserRegisterFormType>();
+  const { register, handleSubmit, formState: { errors } } = useForm<UserRegisterFormType>({
+    resolver: yupResolver(validationSchema)
+  });
   
   const [users, setUsers] = useState<UserType[]>([]);
 
-  const addUser = async (event: UserRegisterFormType) => {
+  const addUser: SubmitHandler<UserRegisterFormType> = async (event: UserRegisterFormType) => {
     const { username } = event;
     console.log(username);
     await axios.post(`${BACKEND_URL}/user/register`, {
-              data: { username }
+              data: event
             })
             .then((response) => {
               console.log(response.data);
@@ -46,16 +71,42 @@ const UserRegister: React.FC = () => {
   }, []);
 
   return (
-    <>
-      <form onSubmit={handleSubmit(addUser)}>
-        <input {...register("username")} type="text" />
-        <button type="submit">add</button>
-      </form>
-      {users.map((user) => (
-        <p key={user.id}>{user.username}</p>
-      ))}
-    </>
-  );
+    <Container sx={{ pt: 5 }}>
+      <Stack spacing={3}>
+        <TextField
+          required
+          label="メールアドレス"
+          type="email"
+          {...register('email')}
+          error={'email' in errors}
+          helperText={errors.email?.message}
+        />
+        <TextField
+          required
+          label="お名前"
+          {...register('username')}
+          error={'name' in errors}
+          helperText={errors.username?.message}
+        />
+        <TextField
+          required
+          label="パスワード"
+          type="password"
+          {...register('password')}
+          error={'password' in errors}
+          helperText={errors.password?.message}
+        />
+        <Button
+          color="primary"
+          variant="contained"
+          size="large"
+          onClick={handleSubmit(addUser)}
+        >
+          作成
+        </Button>
+      </Stack>
+    </Container>
+  )
 }
 
 export default UserRegister;
