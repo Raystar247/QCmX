@@ -13,6 +13,8 @@ app.use(express.urlencoded({ extended: true }));
 type UserType = {
     id: string;
     username: string;
+    email: string;
+    password: string;
 };
 
 
@@ -36,7 +38,10 @@ app.get('/', (req: Request, res: Response) => {
 app.post('/user/register', (req: Request, res: Response) => {
     console.log('postリクエストを受け付けました');
     const { username } = req.body.data;
-    console.log(req.body.data.username);
+    // console.log(req.body.data);
     const uidValue = uid();
-    return res.status(200).json({ id: uidValue, username });
+    users.push(req.body.data);
+    console.log(users);
+    // return res.status(200).json({ id: uidValue, ...req.body.data });
+    return res.status(200).json({ users });
 });
