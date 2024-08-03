@@ -59,7 +59,7 @@ const UserRegister: React.FC = () => {
   }
 
   useEffect(() => {
-    axios.get(BACKEND_URL)
+    axios.get(`${BACKEND_URL}/user/all`)
       .then((response) => {
         console.log(response.data);
         const { users } = response.data;
