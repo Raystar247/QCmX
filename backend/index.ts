@@ -1,6 +1,7 @@
-import express, { Application, Request, Response } from 'express';
+import express, { Application } from 'express';
 import cors from 'cors';
-import { uid } from 'uid';
+
+import userRouter from './routes/user';
 
 const app: Application = express();
 const PORT: number = 3000;
@@ -10,15 +11,7 @@ app.use(cors({ origin: FRONTEND_URL }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-type UserType = {
-    id: string;
-    username: string;
-    email: string;
-    password: string;
-};
 
-
-const users: UserType[] = [];
 
 try {
     app.listen(PORT, () => {
@@ -30,18 +23,4 @@ try {
     }
 }
 
-app.get('/', (req: Request, res: Response) => {
-    console.log("getリクエストを受け付けました");
-    return res.status(200).json({ users });
-});
-
-app.post('/user/register', (req: Request, res: Response) => {
-    console.log('postリクエストを受け付けました');
-    const { username } = req.body.data;
-    // console.log(req.body.data);
-    const uidValue = uid();
-    users.push(req.body.data);
-    console.log(users);
-    // return res.status(200).json({ id: uidValue, ...req.body.data });
-    return res.status(200).json({ users });
-});
+app.use('/user', userRouter);
