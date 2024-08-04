@@ -19,6 +19,11 @@ export class User extends Model {
         const _id: string = uid();
         return await User.create({ id: _id, ...input });
     }
+
+    public static async getAllUsers(): Promise<User[]> {
+        await User.sync();
+        return await User.findAll();
+    }
 }
 
 

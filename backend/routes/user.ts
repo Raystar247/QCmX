@@ -16,9 +16,7 @@ const users: UserType[] = [];
 
 userRouter.get('/all', async (req: Request, res: Response) =>  {
     console.log("getリクエストを受け付けました");
-    await User.sync();
-    const users: User[] = await User.findAll();
-    if ( users.length == 0 ) { console.log('0件結果'); } 
+    const users: User[] = await User.getAllUsers();
     return res.status(200).json({ users });
 });
 
